@@ -3,6 +3,7 @@
 	type TimeUnit = { label: string; value: string; color: string };
 	let now = $state(Date.now()); let startInput = $state(''); let endInput = $state('');
 	let startTime = $state(0); let endTime = $state(0); let error = $state(''); let hasScheduled = $state(false);
+	let showSetup = $state(true);
 	let previousValues = $state(['00', '00', '00', '00']);
 	let lastValues = ['00', '00', '00', '00'];
 	const pad = (value: number) => String(value).padStart(2, '0');
@@ -62,10 +63,18 @@
 				<div class="hinge"></div>
 			</div>{/key}<span class="unit-label">{unit.label}</span></div>{/each}
 		</div>
-		<form onsubmit={(event) => { event.preventDefault(); applySchedule(); }}>
-			<div class="form-heading"><div><span class="step">Temporary setup</span><h2>Event timing</h2></div>{#if hasScheduled}<span class="live-pill"><i></i> Live</span>{/if}</div>
-			<div class="fields"><label><span>Starts</span><input type="datetime-local" bind:value={startInput} required /></label><label><span>Ends</span><input type="datetime-local" bind:value={endInput} required /></label><button type="submit">{hasScheduled ? 'Update clock' : 'Start countdown'}</button></div>
-			{#if error}<p class="error" role="alert">{error}</p>{/if}
-		</form>
+		{#if showSetup}
+			<form onsubmit={(event) => { event.preventDefault(); applySchedule(); }}>
+				<div class="form-heading">
+					<div><span class="step">Temporary setup</span><h2>Event timing</h2></div>
+					<div class="form-actions">
+						{#if hasScheduled}<span class="live-pill"><i></i> Live</span>{/if}
+						<button class="dismiss-setup" type="button" onclick={() => (showSetup = false)} aria-label="Hide temporary setup until the page reloads" title="Hide until reload">×</button>
+					</div>
+				</div>
+				<div class="fields"><label><span>Starts</span><input type="datetime-local" bind:value={startInput} required /></label><label><span>Ends</span><input type="datetime-local" bind:value={endInput} required /></label><button type="submit">{hasScheduled ? 'Update clock' : 'Start countdown'}</button></div>
+				{#if error}<p class="error" role="alert">{error}</p>{/if}
+			</form>
+		{/if}
 	</section>
 </main>
