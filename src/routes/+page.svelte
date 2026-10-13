@@ -5,9 +5,7 @@
 	let startTime = $state(0); let endTime = $state(0); let error = $state(''); let hasScheduled = $state(false);
 	let showSetup = $state(true);
 	let previousValues = $state(['00', '00', '00', '00']);
-	let flipping = $state([false, false, false, false]);
 	let lastValues = ['00', '00', '00', '00'];
-	const flipTimers: number[] = [];
 	const pad = (value: number) => String(value).padStart(2, '0');
 	function valuesAt(timestamp: number) {
 		const target = timestamp < startTime ? startTime : endTime;
@@ -19,11 +17,9 @@
 		const nextStart = new Date(startInput).getTime(); const nextEnd = new Date(endInput).getTime();
 		if (!nextStart || !nextEnd) { error = 'Choose both a start and end time.'; return; }
 		if (nextEnd <= nextStart) { error = 'The end time needs to be after the start time.'; return; }
+		previousValues = units.map((unit) => unit.value);
 		startTime = nextStart; endTime = nextEnd; error = ''; hasScheduled = true;
-		const scheduledNow = Date.now();
-		lastValues = valuesAt(scheduledNow);
-		previousValues = [...lastValues];
-		now = scheduledNow;
+		lastValues = valuesAt(Date.now());
 	}
 	let phase = $derived(now < startTime ? 'Hackathon begins in' : now < endTime ? 'Time remaining' : 'Hackathon complete');
 	let targetTime = $derived(now < startTime ? startTime : endTime);
@@ -42,34 +38,15 @@
 			const nextValues = valuesAt(nextNow);
 			if (nextValues.some((value, index) => value !== lastValues[index])) {
 				previousValues = [...lastValues];
-				const nextFlipping = [...flipping];
-				nextValues.forEach((value, index) => {
-					if (value !== lastValues[index]) {
-						nextFlipping[index] = true;
-						window.clearTimeout(flipTimers[index]);
-						flipTimers[index] = window.setTimeout(() => {
-							const settled = [...previousValues];
-							settled[index] = value;
-							previousValues = settled;
-							const finished = [...flipping];
-							finished[index] = false;
-							flipping = finished;
-						}, 600);
-					}
-				});
-				flipping = nextFlipping;
 				lastValues = nextValues;
 			}
 			now = nextNow;
 		}, 50);
-		return () => {
-			window.clearInterval(interval);
-			flipTimers.forEach((timer) => window.clearTimeout(timer));
-		};
+		return () => window.clearInterval(interval);
 	});
 </script>
 
-<svelte:head><title>HackTheBurgh Countdown</title><meta name="description" content="A live flip-clock countdown for HackTheBurgh." /></svelte:head>
+<svelte:head><title>Hackathon Countdown</title><meta name="description" content="A live flip-clock countdown for hackathon start and finish times." /></svelte:head>
 
 <main>
 	<div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -77,17 +54,14 @@
 		<a class="brand-banner" href="https://hacktheburgh.com" target="_blank" rel="noreferrer" aria-label="Visit the HackTheBurgh website"><img src="/hacktheburgh-banner.svg" alt="HackTheBurgh" /></a>
 		<header><h1 id="page-title">HackTheBurgh Countdown</h1></header>
 		<div class="clock" aria-live="polite" aria-label={`${phase}: ${units.map((unit) => `${unit.value} ${unit.label}`).join(', ')}`}>
-			{#each units as unit, index}<div class="unit-wrap"><div class:running={flipping[index]} class="flip-card" style={`--accent: ${unit.color}`}>
-				<div class="digital back" aria-hidden="true">
-					<div class="clock-half top"><span>{unit.value}</span></div>
-					<div class="clock-half bottom"><span>{unit.value}</span></div>
-				</div>
-				<div class="digital front" aria-hidden="true">
-					<div class="clock-half top"><span>{previousValues[index]}</span></div>
-					<div class="clock-half bottom"><span>{previousValues[index]}</span></div>
-				</div>
+			{#each units as unit, index}<div class="unit-wrap">{#key unit.value}<div class="flip-card" style={`--accent: ${unit.color}`}>
+				<div class="clock-half clock-top"><span>{unit.value}</span></div>
+				<div class="clock-half clock-bottom"><span>{unit.value}</span></div>
+				<div class="clock-half bottom-old" aria-hidden="true"><span>{previousValues[index]}</span></div>
+				<div class="clock-half flap-out" aria-hidden="true"><span>{previousValues[index]}</span></div>
+				<div class="clock-half flap-in" aria-hidden="true"><span>{unit.value}</span></div>
 				<div class="hinge"></div>
-			</div><span class="unit-label">{unit.label}</span></div>{/each}
+			</div>{/key}<span class="unit-label">{unit.label}</span></div>{/each}
 		</div>
 		{#if showSetup}
 			<form onsubmit={(event) => { event.preventDefault(); applySchedule(); }}>
