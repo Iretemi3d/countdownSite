@@ -26,10 +26,12 @@ main::before {
  background-size: var(--grid-cell) 100%, 100% var(--grid-cell), 400px 100%, 400px 100%, 400px 100%, 400px 100%, 100% 400px, 100% 400px, 100% 400px, 100% 400px;
  pointer-events: none;
 }
-.grid-path { position: absolute; z-index: 0; top: -10px; left: 50%; width: 2000px; height: 1200px; transform: translateX(-50%); overflow: visible; pointer-events: none; opacity: .58; }
+.grid-path { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; opacity: .58; }
 .grid-path .route { fill: none; stroke: url('#route-gradient'); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .grid-path .route-branch { opacity: .82; }
-.grid-path .junctions circle { fill: #000; stroke: url('#route-gradient'); stroke-width: 6; vector-effect: non-scaling-stroke; }
+.grid-path .junction-ring, .grid-path .junction-core { fill: none; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.grid-path .junction-ring { stroke: url('#route-gradient'); stroke-width: 24; }
+.grid-path .junction-core { stroke: #000; stroke-width: 12; }
 .countdown-shell { position: relative; z-index: 1; display: grid; grid-template-rows: auto 1fr auto; min-height: calc(100svh - 5rem); width: min(1200px, 100%); margin: 0 auto; }
 .brand-banner { display: block; width: 100vw; margin-left: calc(50% - 50vw); transform: translateY(3.25rem); }
 .brand-banner img { display: block; width: 100%; height: auto; }
@@ -57,7 +59,7 @@ form { margin: 0 auto; width: min(900px, 100%); padding: clamp(1.25rem, 3vw, 2re
 h2 { font-size: 1.35rem; margin: .4rem 0 0; }
 .live-pill { display: inline-flex; gap: .45rem; align-items: center; color: #bbb; font: 500 .72rem/1 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .1em; }
 .live-pill i { width: .5rem; height: .5rem; border-radius: 50%; background: #fec23c; }
-.fields { display: grid; grid-template-columns: 1fr 1fr auto; gap: .8rem; align-items: end; }
+.fields { display: grid; grid-template-columns: 1fr auto; gap: .8rem; align-items: end; }
 label span { display: block; color: #aaa; font-size: .78rem; margin: 0 0 .5rem .15rem; }
 input { width: 100%; min-width: 0; min-height: 3.3rem; color: #f2f2f2; color-scheme: dark; background: #0d0d0d; border: 1px solid #303030; border-radius: .7rem; padding: 0 .9rem; outline: none; transition: border-color .2s; }
 input:focus { border-color: #f26e24; }

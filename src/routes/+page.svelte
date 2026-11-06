@@ -2,21 +2,20 @@
 	import { onMount } from 'svelte';
 	import FlipDigit from '#lib/FlipDigit.svelte';
 	type TimeUnit = { label: string; value: string; color: string };
-	let now = $state(Date.now()); let startInput = $state(''); let endInput = $state('');
-	let startTime = $state(0); let endTime = $state(0); let error = $state(''); let hasScheduled = $state(false);
+	let now = $state(Date.now()); let endInput = $state('');
+	let endTime = $state(0); let error = $state(''); let hasScheduled = $state(false);
 	let showSetup = $state(true);
 	const pad = (value: number) => String(value).padStart(2, '0');
 	function toLocalInput(date: Date) { const offset = date.getTimezoneOffset() * 60_000; return new Date(date.getTime() - offset).toISOString().slice(0, 16); }
 	function applySchedule() {
-		const nextStart = new Date(startInput).getTime(); const nextEnd = new Date(endInput).getTime();
-		if (!nextStart || !nextEnd) { error = 'Choose both a start and end time.'; return; }
-		if (nextEnd <= nextStart) { error = 'The end time needs to be after the start time.'; return; }
-		startTime = nextStart; endTime = nextEnd; error = ''; hasScheduled = true;
+		const nextEnd = new Date(endInput).getTime();
+		if (!nextEnd) { error = 'Choose an end time.'; return; }
+		if (nextEnd <= Date.now()) { error = 'The end time needs to be in the future.'; return; }
+		endTime = nextEnd; error = ''; hasScheduled = true;
 		now = Date.now();
 	}
-	let phase = $derived(now < startTime ? 'Hackathon begins in' : now < endTime ? 'Time remaining' : 'Hackathon complete');
-	let targetTime = $derived(now < startTime ? startTime : endTime);
-	let remaining = $derived(hasScheduled ? Math.max(0, targetTime - now) : 0);
+	let phase = $derived(!hasScheduled ? 'Countdown not set' : now < endTime ? 'Time remaining' : 'Hackathon complete');
+	let remaining = $derived(hasScheduled ? Math.max(0, endTime - now) : 0);
 	let units: TimeUnit[] = $derived([
 		{ label: 'Days', value: pad(Math.floor(remaining / 86_400_000)), color: '#D91114' },
 		{ label: 'Hours', value: pad(Math.floor((remaining / 3_600_000) % 24)), color: '#EE320C' },
@@ -24,8 +23,8 @@
 		{ label: 'Seconds', value: pad(Math.floor((remaining / 1_000) % 60)), color: '#FEC23C' }
 	]);
 	onMount(() => {
-		const base = new Date(); base.setMinutes(base.getMinutes() + 5, 0, 0); const finish = new Date(base.getTime() + 86_400_000);
-		startInput = toLocalInput(base); endInput = toLocalInput(finish);
+		const finish = new Date(Date.now() + 86_400_000); finish.setSeconds(0, 0);
+		endInput = toLocalInput(finish);
 		const interval = window.setInterval(() => {
 			now = Date.now();
 		}, 50);
@@ -33,29 +32,33 @@
 	});
 </script>
 
-<svelte:head><title>HackTheBurgh Countdown</title><meta name="description" content="A live flip-clock countdown for HackTheBurgh start and finish times." /></svelte:head>
+<svelte:head><title>HackTheBurgh Countdown</title><meta name="description" content="A live flip-clock countdown to the end of HackTheBurgh." /></svelte:head>
 
 <main>
-	<svg class="grid-path" viewBox="0 0 2000 1200" aria-hidden="true">
+	<svg class="grid-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
 		<defs>
-			<linearGradient id="route-gradient" x1="-400" y1="0" x2="1600" y2="1200" gradientUnits="userSpaceOnUse">
+			<linearGradient id="route-gradient" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
 				<stop offset="0" stop-color="#D91114" />
 				<stop offset=".34" stop-color="#EE320C" />
 				<stop offset=".68" stop-color="#F26E24" />
 				<stop offset="1" stop-color="#FEC23C" />
 			</linearGradient>
+			<g id="junction-dot">
+				<path class="junction-ring" d="M0 0h.01" />
+				<path class="junction-core" d="M0 0h.01" />
+			</g>
 		</defs>
-		<g class="route-map" transform="translate(400 0)">
-		<path class="route" d="M-400 400 H-120 Q-100 400 -100 380 V80 Q-100 60 -80 60 H280 Q300 60 300 80 V380 Q300 400 320 400 H980 Q1000 400 1000 380 V220 Q1000 200 1020 200 H1280 Q1300 200 1300 220 V380 Q1300 400 1320 400 H1600" />
-		<path class="route route-bottom" d="M-400 1000 H380 Q400 1000 400 980 V920 Q400 900 420 900 H780 Q800 900 800 920 V980 Q800 1000 820 1000 H1180 Q1200 1000 1200 980 V920 Q1200 900 1220 900 H1600" />
+		<g class="route-map">
+		<path class="route" d="M0 33.333 H14 Q15 33.333 15 31.667 V6.667 Q15 5 16 5 H34 Q35 5 35 6.667 V31.667 Q35 33.333 36 33.333 H69 Q70 33.333 70 31.667 V18.333 Q70 16.667 71 16.667 H84 Q85 16.667 85 18.333 V31.667 Q85 33.333 86 33.333 H100" />
+		<path class="route route-bottom" d="M0 83.333 H39 Q40 83.333 40 81.667 V76.667 Q40 75 41 75 H59 Q60 75 60 76.667 V81.667 Q60 83.333 61 83.333 H79 Q80 83.333 80 81.667 V76.667 Q80 75 81 75 H100" />
 		<g class="junctions">
-			<circle cx="-100" cy="60" r="12" /><circle cx="300" cy="60" r="12" />
-			<circle cx="-100" cy="400" r="12" /><circle cx="300" cy="400" r="12" />
-			<circle cx="1000" cy="400" r="12" /><circle cx="1000" cy="200" r="12" />
-			<circle cx="1300" cy="200" r="12" /><circle cx="1300" cy="400" r="12" />
-			<circle cx="400" cy="1000" r="12" /><circle cx="400" cy="900" r="12" />
-			<circle cx="800" cy="900" r="12" /><circle cx="800" cy="1000" r="12" />
-			<circle cx="1200" cy="1000" r="12" /><circle cx="1200" cy="900" r="12" />
+			<use href="#junction-dot" x="15" y="5" /><use href="#junction-dot" x="35" y="5" />
+			<use href="#junction-dot" x="15" y="33.333" /><use href="#junction-dot" x="35" y="33.333" />
+			<use href="#junction-dot" x="70" y="33.333" /><use href="#junction-dot" x="70" y="16.667" />
+			<use href="#junction-dot" x="85" y="16.667" /><use href="#junction-dot" x="85" y="33.333" />
+			<use href="#junction-dot" x="40" y="83.333" /><use href="#junction-dot" x="40" y="75" />
+			<use href="#junction-dot" x="60" y="75" /><use href="#junction-dot" x="60" y="83.333" />
+			<use href="#junction-dot" x="80" y="83.333" /><use href="#junction-dot" x="80" y="75" />
 		</g>
 		</g>
 	</svg>
@@ -79,7 +82,7 @@
 						<button class="dismiss-setup" type="button" onclick={() => (showSetup = false)} aria-label="Hide temporary setup until the page reloads" title="Hide until reload">×</button>
 					</div>
 				</div>
-				<div class="fields"><label><span>Starts</span><input type="datetime-local" bind:value={startInput} required /></label><label><span>Ends</span><input type="datetime-local" bind:value={endInput} required /></label><button type="submit">{hasScheduled ? 'Update clock' : 'Start countdown'}</button></div>
+				<div class="fields"><label><span>Ends</span><input type="datetime-local" bind:value={endInput} required /></label><button type="submit">{hasScheduled ? 'Update clock' : 'Start countdown'}</button></div>
 				{#if error}<p class="error" role="alert">{error}</p>{/if}
 			</form>
 		{/if}
