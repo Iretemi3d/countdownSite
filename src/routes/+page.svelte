@@ -36,6 +36,29 @@
 <svelte:head><title>HackTheBurgh Countdown</title><meta name="description" content="A live flip-clock countdown for HackTheBurgh start and finish times." /></svelte:head>
 
 <main>
+	<svg class="grid-path" viewBox="0 0 2000 1200" aria-hidden="true">
+		<defs>
+			<linearGradient id="route-gradient" x1="-400" y1="0" x2="1600" y2="1200" gradientUnits="userSpaceOnUse">
+				<stop offset="0" stop-color="#D91114" />
+				<stop offset=".34" stop-color="#EE320C" />
+				<stop offset=".68" stop-color="#F26E24" />
+				<stop offset="1" stop-color="#FEC23C" />
+			</linearGradient>
+		</defs>
+		<g class="route-map" transform="translate(400 0)">
+		<path class="route" d="M-400 400 H-120 Q-100 400 -100 380 V80 Q-100 60 -80 60 H280 Q300 60 300 80 V380 Q300 400 320 400 H980 Q1000 400 1000 380 V220 Q1000 200 1020 200 H1280 Q1300 200 1300 220 V380 Q1300 400 1320 400 H1600" />
+		<path class="route route-bottom" d="M-400 1000 H380 Q400 1000 400 980 V920 Q400 900 420 900 H780 Q800 900 800 920 V980 Q800 1000 820 1000 H1180 Q1200 1000 1200 980 V920 Q1200 900 1220 900 H1600" />
+		<g class="junctions">
+			<circle cx="-100" cy="60" r="12" /><circle cx="300" cy="60" r="12" />
+			<circle cx="-100" cy="400" r="12" /><circle cx="300" cy="400" r="12" />
+			<circle cx="1000" cy="400" r="12" /><circle cx="1000" cy="200" r="12" />
+			<circle cx="1300" cy="200" r="12" /><circle cx="1300" cy="400" r="12" />
+			<circle cx="400" cy="1000" r="12" /><circle cx="400" cy="900" r="12" />
+			<circle cx="800" cy="900" r="12" /><circle cx="800" cy="1000" r="12" />
+			<circle cx="1200" cy="1000" r="12" /><circle cx="1200" cy="900" r="12" />
+		</g>
+		</g>
+	</svg>
 	<section class="countdown-shell" aria-labelledby="page-title">
 		<a class="brand-banner" href="https://hacktheburgh.com" target="_blank" rel="noreferrer" aria-label="Visit the HackTheBurgh website"><img src="/hacktheburgh-banner.svg" alt="HackTheBurgh" /></a>
 		<h1 id="page-title" class="sr-only">HackTheBurgh Countdown</h1>
