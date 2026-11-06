@@ -35,33 +35,6 @@
 <svelte:head><title>HackTheBurgh Countdown</title><meta name="description" content="A live flip-clock countdown to the end of HackTheBurgh." /></svelte:head>
 
 <main>
-	<svg class="grid-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-		<defs>
-			<linearGradient id="route-gradient" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-				<stop offset="0" stop-color="#D91114" />
-				<stop offset=".34" stop-color="#EE320C" />
-				<stop offset=".68" stop-color="#F26E24" />
-				<stop offset="1" stop-color="#FEC23C" />
-			</linearGradient>
-			<g id="junction-dot">
-				<path class="junction-ring" d="M0 0h.01" />
-				<path class="junction-core" d="M0 0h.01" />
-			</g>
-		</defs>
-		<g class="route-map">
-		<path class="route" d="M0 33.333 H14 Q15 33.333 15 31.667 V6.667 Q15 5 16 5 H34 Q35 5 35 6.667 V31.667 Q35 33.333 36 33.333 H69 Q70 33.333 70 31.667 V18.333 Q70 16.667 71 16.667 H84 Q85 16.667 85 18.333 V31.667 Q85 33.333 86 33.333 H100" />
-		<path class="route route-bottom" d="M0 83.333 H39 Q40 83.333 40 81.667 V76.667 Q40 75 41 75 H59 Q60 75 60 76.667 V81.667 Q60 83.333 61 83.333 H79 Q80 83.333 80 81.667 V76.667 Q80 75 81 75 H100" />
-		<g class="junctions">
-			<use href="#junction-dot" x="15" y="5" /><use href="#junction-dot" x="35" y="5" />
-			<use href="#junction-dot" x="15" y="33.333" /><use href="#junction-dot" x="35" y="33.333" />
-			<use href="#junction-dot" x="70" y="33.333" /><use href="#junction-dot" x="70" y="16.667" />
-			<use href="#junction-dot" x="85" y="16.667" /><use href="#junction-dot" x="85" y="33.333" />
-			<use href="#junction-dot" x="40" y="83.333" /><use href="#junction-dot" x="40" y="75" />
-			<use href="#junction-dot" x="60" y="75" /><use href="#junction-dot" x="60" y="83.333" />
-			<use href="#junction-dot" x="80" y="83.333" /><use href="#junction-dot" x="80" y="75" />
-		</g>
-		</g>
-	</svg>
 	<section class="countdown-shell" aria-labelledby="page-title">
 		<a class="brand-banner" href="https://hacktheburgh.com" target="_blank" rel="noreferrer" aria-label="Visit the HackTheBurgh website"><img src="/hacktheburgh-banner.svg" alt="HackTheBurgh" /></a>
 		<h1 id="page-title" class="sr-only">HackTheBurgh Countdown</h1>

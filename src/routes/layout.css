@@ -26,18 +26,12 @@ main::before {
  background-size: var(--grid-cell) 100%, 100% var(--grid-cell), 400px 100%, 400px 100%, 400px 100%, 400px 100%, 100% 400px, 100% 400px, 100% 400px, 100% 400px;
  pointer-events: none;
 }
-.grid-path { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; opacity: .58; }
-.grid-path .route { fill: none; stroke: url('#route-gradient'); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.grid-path .route-branch { opacity: .82; }
-.grid-path .junction-ring, .grid-path .junction-core { fill: none; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-.grid-path .junction-ring { stroke: url('#route-gradient'); stroke-width: 24; }
-.grid-path .junction-core { stroke: #000; stroke-width: 12; }
 .countdown-shell { position: relative; z-index: 1; display: grid; grid-template-rows: auto 1fr auto; min-height: calc(100svh - 5rem); width: min(1200px, 100%); margin: 0 auto; }
 .brand-banner { display: block; width: 100vw; margin-left: calc(50% - 50vw); transform: translateY(3.25rem); }
 .brand-banner img { display: block; width: 100%; height: auto; }
 .brand-banner:focus-visible { outline: 3px solid #fec23c; outline-offset: -3px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
-.clock { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; align-self: center; width: 100%; margin: 3rem auto; }
+.clock { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; align-self: center; width: 100%; margin: 3rem auto; translate: 0 calc(.75rem - 1px); }
 .unit-wrap { min-width: 0; text-align: center; }
 .flip-digit { --face: #0c0c12; position: relative; width: 100%; min-width: 0; aspect-ratio: 1; border-radius: .7rem; background: var(--face); color: var(--accent); container-type: inline-size; isolation: isolate; }
 .digit-half { position: absolute; left: 0; width: 100%; height: 50%; overflow: hidden; background: var(--face); backface-visibility: hidden; }
@@ -77,7 +71,6 @@ button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
  .unit-label { margin-top: .75rem; }
  .fields { grid-template-columns: 1fr; }
  .fields button { margin-top: .35rem; }
- .grid-path { opacity: .3; }
 }
 @media (min-width: 1380px) {
  .clock { grid-template-columns: repeat(4, calc(var(--major-grid) * 3)); gap: 0; width: calc(var(--major-grid) * 12); }
